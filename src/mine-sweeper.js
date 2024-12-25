@@ -23,9 +23,43 @@ const { NotImplementedError } = require('../extensions/index.js');
  *  [1, 1, 1]
  * ]
  */
-function minesweeper(/* matrix */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+function minesweeper(matrix) {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  
+  // Initialize the result matrix with all values as 0
+  let result = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+  // Directions for 8 neighboring cells
+  const directions = [
+    [-1, 0], [1, 0], [0, -1], [0, 1],   // up, down, left, right
+    [-1, -1], [-1, 1], [1, -1], [1, 1]   // diagonals
+  ];
+
+  // Iterate through each cell in the matrix
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      // If the current cell is a mine, set the result to -1 (or 1)
+      if (matrix[i][j]) {
+        result[i][j] = 1;
+      } else {
+        // Check surrounding cells
+        let mineCount = 0;
+        for (let [dx, dy] of directions) {
+          let x = i + dx;
+          let y = j + dy;
+
+          // Check if the neighbor is within bounds and if it's a mine
+          if (x >= 0 && x < rows && y >= 0 && y < cols && matrix[x][y]) {
+            mineCount++;
+          }
+        }
+        result[i][j] = mineCount;
+      }
+    }
+  }
+
+  return result;
 }
 
 module.exports = {
